@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
+      <div class="container">
+    <header>
+      <h1>Typing Speed Test</h1>
+      <div class="controls">
+        <div class="time">
+          <button data-time="10">10s</button>
+          <button data-time="20">20s</button>
+          <button data-time="30">30s</button>
+        </div>
+        <div id="wordscount" class="words">
+          <button data-words="10">10 words</button>
+          <button data-words="20">`20 words</button>
+          <button data-words="30">30 words</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div id="playground" tabindex="0">
+      </div>
+      <div id="status">
+        <span id="timer">0</span> sec |
+        <span id="wpm">0</span> WPM
+      </div>
+      <button id="restart">Restart</button>
+    </main>
+  </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
