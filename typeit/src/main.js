@@ -19,47 +19,76 @@ function generatewords(count) {
   for (let i = 0; i < count; i++) {
     text.push(wordList[i])
   }
-  return text.join("")
+  return text
 }
 
 let wordscount = document.getElementById('wordscount')
 
 console.log(wordscount.children[1].dataset.words) //buttons selected for number of words 
 
-let words = generatewords(10) // words generated here 
-console.log(words.split(""))
+let words = generatewords(60) // words generated here 
+console.log(words)
 
 
-let distribute = document.createElement('span')
+let distribute;
+let wordfocused;
+let shpan
+let spancount = 0;
 
 function createspan() {
-  playground.appendChild(distribute)
-  distribute.textContent = words[0]
   playground.focus()
+  for (let i = 0; i < words.length; i++) {
+    wordfocused = words[i]
+    distribute = document.createElement('div')
+    playground.appendChild(distribute)
+    // console.log(wordfocused)
+    for (let j = 0; j < wordfocused.length; j++) {
+      shpan = document.createElement('span')
+      shpan.textContent = wordfocused[j]
+      distribute.appendChild(shpan)
+      // console.log(shpan)
+    }
+    let space = document.createElement('span')
+    distribute.appendChild(space)
+    space.innerHTML = "&nbsp;"
+  }
 }
-function check() {
-  playground.focus()
-  playground.addEventListener('keydown', function (event) {
-    distribute.classList.remove('correct', 'wrong')
-    let keypressed = event.key
-    let expectedkey = distribute.innerText
-    if (keypressed == expectedkey) {
-      distribute.classList.add('correct')
-      console.log(keypressed)
-    } else {
-      distribute.classList.add('wrong')
-      console.log(keypressed)
-    };
-  });
-}
-
 createspan()
-check()
+playground.focus()
+let checkword = playground.querySelectorAll('span')
+console.log(checkword[0])
+playground.addEventListener('keydown', (e) => {
+  let keypressed = e.key;
+  let expectedkey = checkword[spancount].innerText
+  if (keypressed === expectedkey) {
+    console.log("hogaya kaam")
+  }
+})
+// function check() {
+//   playground.focus()
+//   playground.addEventListener('keydown', function (event) {
+//     shpan.classList.remove('correct', 'wrong')
+//     let keypressed = event.key
+//     let expectedkey = distribute.innerText
+//     if (keypressed == expectedkey) {
+//       shpan.classList.add('correct')
+//       console.log(keypressed)
+//     } else {
+//       shpan.classList.add('wrong')
+//       console.log(keypressed)
+//     };
+//   });
+// }
+
+// check()
 
 restart.addEventListener('click', (e) => {
   console.log("restartclicked")
   distribute.classList.add('restart')
-  distribute.classList.remove('correct', 'wrong','restart')
-  check()
+  distribute.classList.remove('correct', 'wrong', 'restart')
 })
+
+//now our next goal is to make the word fit in to the playground calculate total words typed and time taken.
+
+
 
