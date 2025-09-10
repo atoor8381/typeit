@@ -13,6 +13,7 @@ let twentywords = document.querySelector('[data-words="20"]')
 let thirtywords = document.querySelector('[data-words="30"]')
 let playground = document.getElementById('playground')
 let restart = document.getElementById('restart')
+let correctwords = document.getElementById('correctwords')
 
 function generatewords(count) {
   let text = []
@@ -34,9 +35,10 @@ let distribute;
 let wordfocused;
 let shpan
 let spancount = 0;
+let numofwords=0;
 
 function createspan() {
-  playground.focus()
+  // playground.focus()
   for (let i = 0; i < words.length; i++) {
     wordfocused = words[i]
     distribute = document.createElement('div')
@@ -50,20 +52,38 @@ function createspan() {
     }
     let space = document.createElement('span')
     distribute.appendChild(space)
-    space.innerHTML = "&nbsp;"
+    space.innerText = " "
   }
 }
 createspan()
-playground.focus()
-let checkword = playground.querySelectorAll('span')
-console.log(checkword[0])
-playground.addEventListener('keydown', (e) => {
-  let keypressed = e.key;
-  let expectedkey = checkword[spancount].innerText
-  if (keypressed === expectedkey) {
-    console.log("hogaya kaam")
-  }
+
+function play() {
+  playground.focus()
+  let checkword = playground.querySelectorAll('span')
+  console.log(checkword[5])
+  playground.addEventListener('click',()=>{
+  playground.addEventListener('keydown', (e) => {
+    let keypressed = e.key;
+    let expectedkey = checkword[spancount].innerText
+    if (keypressed === " ") {
+      e.preventDefault()
+      console.log("aghe chalo")
+    } else if (keypressed === expectedkey) {
+      console.log("hogaya kaam")
+      numofwords++
+      correctwords.innerHTML=numofwords
+    }else {
+      console.log("abey bsdk kia kr raha hai")
+    }
+    if(keypressed==='Backspace'){
+      spancount--;
+    }else{
+      spancount++
+    }
 })
+})
+}
+play()
 // function check() {
 //   playground.focus()
 //   playground.addEventListener('keydown', function (event) {
