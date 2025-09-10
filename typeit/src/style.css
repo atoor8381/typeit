@@ -91,6 +91,19 @@ header h1 {
     cursor: pointer;
   }
 
+  #start{
+    background: #6200ea;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
   #restart:hover {
+    background: #7b1fa2;
+  }
+
+  #start:hover {
     background: #7b1fa2;
   }

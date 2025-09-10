@@ -14,6 +14,7 @@ let thirtywords = document.querySelector('[data-words="30"]')
 let playground = document.getElementById('playground')
 let restart = document.getElementById('restart')
 let correctwords = document.getElementById('correctwords')
+let start = document.getElementById('start')
 
 function generatewords(count) {
   let text = []
@@ -35,10 +36,9 @@ let distribute;
 let wordfocused;
 let shpan
 let spancount = 0;
-let numofwords=0;
+let numofwords = 0;
 
 function createspan() {
-  // playground.focus()
   for (let i = 0; i < words.length; i++) {
     wordfocused = words[i]
     distribute = document.createElement('div')
@@ -58,32 +58,39 @@ function createspan() {
 createspan()
 
 function play() {
-  playground.focus()
   let checkword = playground.querySelectorAll('span')
   console.log(checkword[5])
-  playground.addEventListener('click',()=>{
   playground.addEventListener('keydown', (e) => {
     let keypressed = e.key;
     let expectedkey = checkword[spancount].innerText
     if (keypressed === " ") {
-      e.preventDefault()
-      console.log("aghe chalo")
-    } else if (keypressed === expectedkey) {
-      console.log("hogaya kaam")
-      numofwords++
-      correctwords.innerHTML=numofwords
-    }else {
-      console.log("abey bsdk kia kr raha hai")
+      e.preventDefault();
+      console.log("aghe chalo");
+      spancount++; // move to next word on space
     }
-    if(keypressed==='Backspace'){
-      spancount--;
-    }else{
-      spancount++
+    else if (keypressed === 'Backspace') {
+      spancount = Math.max(0, spancount - 1); // don’t let it go below 0
+      console.log("backspace pressed");
     }
-})
-})
+    else if (keypressed === expectedkey) {
+      console.log("hogaya kaam");
+      numofwords++;
+      correctwords.innerHTML = numofwords;
+      spancount++;
+    }
+    else {
+      console.log("abey bsdk kia kr raha hai");
+      spancount++;
+    }
+
+  })
 }
-play()
+
+start.addEventListener('click', (e) => {
+  playground.focus()
+  console.log(e)
+  play()
+})
 // function check() {
 //   playground.focus()
 //   playground.addEventListener('keydown', function (event) {
