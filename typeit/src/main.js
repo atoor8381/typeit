@@ -111,8 +111,10 @@ start.addEventListener('click', (e) => {
 
 restart.addEventListener('click', (e) => {
   console.log("restartclicked")
-  distribute.classList.add('restart')
-  distribute.classList.remove('correct', 'wrong', 'restart')
+  numofwords = 0;
+  spancount = 0;
+  correctwords.innerHTML = numofwords;
+
 })
 
 //now our next goal is to make the word fit in to the playground calculate total words typed and time taken.
