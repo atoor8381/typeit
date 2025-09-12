@@ -23,8 +23,24 @@ let correctwords = document.getElementById('correctwords')
 let start = document.getElementById('start')
 let caret = document.createElement("span");
 let wordsContainer = document.getElementById('words-container')
+let timerElement = document.getElementById('timer')
 caret.classList.add("caret");
 
+
+let timeleft=10;
+function timer(){
+  let interval = setInterval(() => {
+    timeleft--;
+    console.log(timeleft)
+    if(timeleft==0){
+      clearInterval(interval)
+      console.log("time up")
+    }
+    timerElement.textContent=timeleft
+  }, 1000);
+}
+
+timer()
 
 function generatewords(count) {
   let text = []
@@ -91,14 +107,16 @@ function play() {
     let expectedkey = checkword[spancount].innerText
     if (keypressed === " ") {
       e.preventDefault();
+      numofwords++;
+      correctwords.innerHTML = numofwords;
       console.log("aghe chalo");
       spancount++; // move to next word on space
-    }
-    else if (keypressed === 'Backspace') {
+    }else if (keypressed === 'Backspace') {
       spancount = Math.max(0, spancount - 1); // don’t let it go below 0
       console.log("backspace pressed");
       numofwords = Math.max(0, numofwords - 1)
       correctwords.innerHTML = numofwords;
+      checkword[spancount].classList.remove('correct','wrong')
     }
     else if (keypressed === expectedkey) {
       console.log("hogaya kaam");
@@ -109,6 +127,7 @@ function play() {
     }
     else {
       console.log("abey bsdk kia kr raha hai");
+      checkword[spancount].classList.add('wrong')
       spancount++;
     }
     scrollIfNeeded()
