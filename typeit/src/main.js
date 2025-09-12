@@ -6,7 +6,7 @@ const wordList = [
   "city", "ocean", "phone", "dog", "cat", "fish", "door", "house", "cake", "game", "clock",
   "brush", "sky", "fire", "paper", "key", "milk", "ball", "horse", "car", "hill", "lamp",
   "school", "fruit", "dress", "tea", "coffee", "room", "song", "hand", "face", "bell", "path",
-    "apple", "banana", "chair", "river", "mountain", "window", "book", "orange", "pencil",
+  "apple", "banana", "chair", "river", "mountain", "window", "book", "orange", "pencil",
   "light", "shadow", "green", "music", "cloud", "flower", "bird", "stone", "table", "smile",
   "water", "dream", "leaf", "rain", "shoe", "glass", "tree", "sun", "star", "road", "train",
   "city", "ocean", "phone", "dog", "cat", "fish", "door", "house", "cake", "game", "clock",
@@ -26,21 +26,24 @@ let wordsContainer = document.getElementById('words-container')
 let timerElement = document.getElementById('timer')
 caret.classList.add("caret");
 
-
-let timeleft=10;
-function timer(){
+let istimeup
+let timeleft = 10;
+function timer() {
   let interval = setInterval(() => {
     timeleft--;
     console.log(timeleft)
-    if(timeleft==0){
+    if (timeleft == 0) {
+      timerElement.textContent = timeleft
       clearInterval(interval)
       console.log("time up")
+      istimeup = true;
+      timerElement.textContent = '10'
+
     }
-    timerElement.textContent=timeleft
+    timerElement.textContent = timeleft
   }, 1000);
 }
 
-timer()
 
 function generatewords(count) {
   let text = []
@@ -101,8 +104,12 @@ createspan()
 
 function play() {
   let checkword = playground.querySelectorAll('span')
-  console.log(checkword[5])
   playground.addEventListener('keydown', (e) => {
+    checkword[spancount].style.textDecoration = "underline"
+    if (istimeup === true) {
+      e.preventDefault()
+      return;
+    }
     let keypressed = e.key;
     let expectedkey = checkword[spancount].innerText
     if (keypressed === " ") {
@@ -111,12 +118,12 @@ function play() {
       correctwords.innerHTML = numofwords;
       console.log("aghe chalo");
       spancount++; // move to next word on space
-    }else if (keypressed === 'Backspace') {
+    } else if (keypressed === 'Backspace') {
       spancount = Math.max(0, spancount - 1); // don’t let it go below 0
       console.log("backspace pressed");
       numofwords = Math.max(0, numofwords - 1)
       correctwords.innerHTML = numofwords;
-      checkword[spancount].classList.remove('correct','wrong')
+      checkword[spancount].classList.remove('correct', 'wrong')
     }
     else if (keypressed === expectedkey) {
       console.log("hogaya kaam");
@@ -134,40 +141,18 @@ function play() {
   })
 }
 
-  playground.focus()
-  play()
-
-//   playground.addEventListener('keydown', (e) => {
-//   let keypressed = e.key;
-//   let checkword = wordsContainer.querySelectorAll('span')
-//   let expectedkey = checkword[spancount]?.innerText;
-
-//   if (keypressed === " ") {
-//     e.preventDefault();
-//     spancount++;
-//   }
-//   else if (keypressed === 'Backspace') {
-//     spancount = Math.max(0, spancount - 1);
-//     numofwords = Math.max(0, numofwords - 1);
-//     correctwords.innerHTML = numofwords;
-//   }
-//   else if (keypressed === expectedkey) {
-//     numofwords++;
-//     correctwords.innerHTML = numofwords;
-//     spancount++;
-//   }
-//   else {
-//     spancount++;
-//   }
-
-//   scrollIfNeeded();
-// });
-
+playground.focus()
+playground.addEventListener('click', () => {
+  timer()
+})
+play()
 
 restart.addEventListener('click', (e) => {
   console.log("restartclicked")
   numofwords = 0;
   spancount = 0;
   correctwords.innerHTML = numofwords;
+  timerElement.textContent = '10';
+  // checkword.classList.remove('correct','wrong')
   playground.focus()
 })
