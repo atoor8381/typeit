@@ -88,7 +88,6 @@ function play() {
   console.log(checkword[5])
   playground.addEventListener('keydown', (e) => {
     let keypressed = e.key;
-    // checkword[spancount].style.textDecoration = "underline";
     let expectedkey = checkword[spancount].innerText
     if (keypressed === " ") {
       e.preventDefault();
@@ -105,6 +104,7 @@ function play() {
       console.log("hogaya kaam");
       numofwords++;
       correctwords.innerHTML = numofwords;
+      checkword[spancount].classList.add('correct')
       spancount++;
     }
     else {
