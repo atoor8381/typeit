@@ -41,7 +41,7 @@ header h1 {
 .caret {
   display: inline-block;
   width: 2px;
-  height: 1em;
+  height: 2em;
   background: #e0e0e0;
   animation: blink 1s step-start infinite;
   vertical-align: bottom;
@@ -63,9 +63,9 @@ header h1 {
 #playground {
   background: #1a1a1a;
   padding: 10px;
-  font-size: 20px;
+  font-size: 30px;
   font-family: monospace;
-  line-height: 1.8;
+  line-height: 2;
   height: calc(1.8em * 3);  /* exactly 3 lines */
   overflow: hidden;         /* hide extra */
   position: relative;
@@ -88,6 +88,18 @@ header h1 {
 
 .wrong {
   color: #f44336;
+}
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: rgb(255, 255, 255);
+  vertical-align: middle;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { background: transparent; }
 }
 
   .restart{

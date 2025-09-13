@@ -21,9 +21,27 @@ let playground = document.getElementById('playground')
 let restart = document.getElementById('restart')
 let correctwords = document.getElementById('correctwords')
 let start = document.getElementById('start')
-let caret = document.createElement("span");
 let wordsContainer = document.getElementById('words-container')
 let timerElement = document.getElementById('timer')
+let caret = document.createElement("span");
+let tensec = document.getElementById('10')
+caret.classList.add("caret");
+
+tensec.addEventListener('click',(e)=>{
+  timer()
+})
+
+function moveCaret(position) {
+
+  let targetSpan = checkword[position];
+  if (targetSpan) {
+    targetSpan.parentNode.insertBefore(caret, targetSpan);
+  } else {
+    // if at the end, just append
+    wordsContainer.appendChild(caret);
+  }
+}
+
 caret.classList.add("caret");
 
 let istimeup
@@ -43,7 +61,6 @@ function timer() {
     timerElement.textContent = timeleft
   }, 1000);
 }
-
 
 function generatewords(count) {
   let text = []
@@ -102,10 +119,11 @@ function createspan() {
 }
 createspan()
 
+let checkword;
+
 function play() {
-  let checkword = playground.querySelectorAll('span')
+  checkword = playground.querySelectorAll('span')
   playground.addEventListener('keydown', (e) => {
-    checkword[spancount].style.textDecoration = "underline"
     if (istimeup === true) {
       e.preventDefault()
       return;
@@ -137,14 +155,13 @@ function play() {
       checkword[spancount].classList.add('wrong')
       spancount++;
     }
+    moveCaret(spancount); 
     scrollIfNeeded()
   })
 }
 
 playground.focus()
-playground.addEventListener('click', () => {
-  timer()
-})
+
 play()
 
 restart.addEventListener('click', (e) => {
