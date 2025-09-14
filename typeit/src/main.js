@@ -14,9 +14,6 @@ const wordList = [
   "school", "fruit", "dress", "tea", "coffee", "room", "song", "hand", "face", "bell", "path"
 ];
 
-let tenwords = document.querySelector('[data-words="10"]')
-let twentywords = document.querySelector('[data-words="20"]')
-let thirtywords = document.querySelector('[data-words="30"]')
 let playground = document.getElementById('playground')
 let restart = document.getElementById('restart')
 let correctwords = document.getElementById('correctwords')
@@ -25,10 +22,19 @@ let wordsContainer = document.getElementById('words-container')
 let timerElement = document.getElementById('timer')
 let caret = document.createElement("span");
 let tensec = document.getElementById('10')
+let twentysec = document.getElementById('20')
+let thirtysec = document.getElementById('30')
 caret.classList.add("caret");
 
 tensec.addEventListener('click',(e)=>{
-  timer()
+  timer(10)
+})
+twentysec.addEventListener('click',(e)=>{
+  timer(20)
+})
+thirtysec.addEventListener('click',(e)=>{
+  timer(30)
+  console.log("button clicked")
 })
 
 function moveCaret(position) {
@@ -44,19 +50,26 @@ function moveCaret(position) {
 
 caret.classList.add("caret");
 
+let interval=null
 let istimeup
-let timeleft = 10;
-function timer() {
-  let interval = setInterval(() => {
+let timeleft;
+function timer(length) {
+  if(interval !== null ){
+    return;
+  }
+  playground.focus()
+  timeleft=length;
+  timerElement.textContent = timeleft
+  interval = setInterval(() => {
     timeleft--;
     console.log(timeleft)
     if (timeleft == 0) {
       timerElement.textContent = timeleft
       clearInterval(interval)
+      interval == null;
       console.log("time up")
       istimeup = true;
-      timerElement.textContent = '10'
-
+      timerElement.textContent = length
     }
     timerElement.textContent = timeleft
   }, 1000);
@@ -164,12 +177,16 @@ playground.focus()
 
 play()
 
-restart.addEventListener('click', (e) => {
-  console.log("restartclicked")
+function reset(){
+ console.log("restartclicked")
   numofwords = 0;
   spancount = 0;
   correctwords.innerHTML = numofwords;
   timerElement.textContent = '10';
   // checkword.classList.remove('correct','wrong')
   playground.focus()
+}
+
+restart.addEventListener('click', (e) => {
+  reset()
 })
