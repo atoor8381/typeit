@@ -26,20 +26,26 @@ let twentysec = document.getElementById('20')
 let thirtysec = document.getElementById('30')
 caret.classList.add("caret");
 
-tensec.addEventListener('click',(e)=>{
+tensec.addEventListener('click', (e) => {
   timer(10)
 })
-twentysec.addEventListener('click',(e)=>{
+twentysec.addEventListener('click', (e) => {
   timer(20)
 })
-thirtysec.addEventListener('click',(e)=>{
+thirtysec.addEventListener('click', (e) => {
   timer(30)
   console.log("button clicked")
 })
 
+let targetSpan
+
+function calculate(){
+  
+}
+
 function moveCaret(position) {
 
-  let targetSpan = checkword[position];
+  targetSpan = checkword[position];
   if (targetSpan) {
     targetSpan.parentNode.insertBefore(caret, targetSpan);
   } else {
@@ -50,26 +56,29 @@ function moveCaret(position) {
 
 caret.classList.add("caret");
 
-let interval=null
+let interval = null
 let istimeup
 let timeleft;
 function timer(length) {
-  if(interval !== null ){
+  if (interval !== null) {
     return;
   }
+  defaultinterval = 1;
   playground.focus()
-  timeleft=length;
+  timeleft = length;
   timerElement.textContent = timeleft
   interval = setInterval(() => {
     timeleft--;
     console.log(timeleft)
+    console.log(length)
     if (timeleft == 0) {
-      timerElement.textContent = timeleft
       clearInterval(interval)
-      interval == null;
+      interval = null;
       console.log("time up")
       istimeup = true;
       timerElement.textContent = length
+      // calculate() we will calculate the results before restarting anything 
+      reset()
     }
     timerElement.textContent = timeleft
   }, 1000);
@@ -98,6 +107,7 @@ let spancount = 0;
 let numofwords = 0;
 
 let currentLine = 0;
+let lineHeight;
 
 function scrollIfNeeded() {
   let caretSpan = wordsContainer.querySelectorAll('span')[spancount];
@@ -108,8 +118,9 @@ function scrollIfNeeded() {
 
   // If caret goes below the visible area, scroll up by one line
   if (caretRect.bottom > playgroundRect.bottom) {
+    console.log(caretRect.bottom, playgroundRect.bottom)
     currentLine++;
-    let lineHeight = parseFloat(getComputedStyle(playground).lineHeight);
+    lineHeight = parseFloat(getComputedStyle(playground).lineHeight);
     wordsContainer.style.transform = `translateY(-${currentLine * lineHeight}px)`;
   }
 }
@@ -134,13 +145,31 @@ createspan()
 
 let checkword;
 
+let defaultinterval = 0;
+
+function defaulttimer(){
+  let timeleft = 10;
+  let interval = setInterval(()=>{
+    timerElement.textContent=timeleft
+    timeleft--;
+    if(timeleft==0){
+      clearInterval(interval)
+      timeleft=0
+      timerElement.textContent='10'
+    }
+  },1000)
+}
+
 function play() {
   checkword = playground.querySelectorAll('span')
   playground.addEventListener('keydown', (e) => {
-    if (istimeup === true) {
+    if(istimeup == true ){
       e.preventDefault()
-      return;
     }
+    if(defaultinterval == 0 ){
+      defaulttimer()
+    }
+    defaultinterval++;
     let keypressed = e.key;
     let expectedkey = checkword[spancount].innerText
     if (keypressed === " ") {
@@ -168,7 +197,7 @@ function play() {
       checkword[spancount].classList.add('wrong')
       spancount++;
     }
-    moveCaret(spancount); 
+    moveCaret(spancount);
     scrollIfNeeded()
   })
 }
@@ -177,13 +206,18 @@ playground.focus()
 
 play()
 
-function reset(){
- console.log("restartclicked")
+function reset() {
+  defaultinterval = 0
+  console.log("restartclicked")
   numofwords = 0;
   spancount = 0;
   correctwords.innerHTML = numofwords;
-  timerElement.textContent = '10';
-  // checkword.classList.remove('correct','wrong')
+  currentLine = 0;
+  wordsContainer.style.transform = `translateY(0px)`;
+  moveCaret(0)
+  checkword.forEach(element => {
+    element.classList.remove('correct','wrong')
+  });
   playground.focus()
 }
 
