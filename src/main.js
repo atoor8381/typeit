@@ -1,4 +1,5 @@
 import './style.css'
+
 const wordList = [
   "apple", "banana", "chair", "river", "mountain", "window", "book", "orange", "pencil",
   "light", "shadow", "green", "music", "cloud", "flower", "bird", "stone", "table", "smile",
@@ -17,7 +18,6 @@ const wordList = [
 let playground = document.getElementById('playground')
 let restart = document.getElementById('restart')
 let correctwords = document.getElementById('correctwords')
-let start = document.getElementById('start')
 let wordsContainer = document.getElementById('words-container')
 let timerElement = document.getElementById('timer')
 let caret = document.createElement("span");
@@ -26,59 +26,80 @@ let twentysec = document.getElementById('20')
 let thirtysec = document.getElementById('30')
 caret.classList.add("caret");
 
-tensec.addEventListener('click', (e) => {
-  timer(10)
-})
-twentysec.addEventListener('click', (e) => {
-  timer(20)
-})
-thirtysec.addEventListener('click', (e) => {
-  timer(30)
-  console.log("button clicked")
-})
+let intervals = [] //creating an array for the intervals 
+
+function addintervals(fn, time) {
+  const id = setInterval(fn, time)
+  intervals.push(id)
+  return id
+}
+
+function intervalclear(intId) {
+  if (!intId) return;
+  clearInterval(intId)
+  intervals = intervals.filter(id => id !== intId)
+}
+
+function clearrallinterval() {
+  intervals.forEach(id => clearInterval(id))
+  intervals = []
+}
+
+clearrallinterval()
+
+// Select all timer buttons
+const timerButtons = [tensec, twentysec, thirtysec];
+
+function disableTimerButtons(state) {
+  timerButtons.forEach(btn => {
+    if (!btn) return;
+    btn.disabled = state;
+  });
+}
+
+timerButtons.forEach(button => {
+  if (!button) return;
+  button.addEventListener('click', () => {
+    disableTimerButtons(true);
+    const seconds = parseInt(button.id);
+    timer(seconds);
+    setTimeout(() => {
+      disableTimerButtons(false);
+    }, seconds * 1000 + 200);
+  });
+});
 
 let targetSpan
+let timerIntervalId = null
+let defaultTimerIntervalId = null
+let istimeup = false
+let timeleft
+let defaultTimerRunning = false
+let defaultTimerOver = false // 👈 NEW FLAG
 
-function calculate(){
-  
-}
-
-function moveCaret(position) {
-
-  targetSpan = checkword[position];
-  if (targetSpan) {
-    targetSpan.parentNode.insertBefore(caret, targetSpan);
-  } else {
-    // if at the end, just append
-    wordsContainer.appendChild(caret);
-  }
-}
-
-caret.classList.add("caret");
-
-let interval = null
-let istimeup
-let timeleft;
 function timer(length) {
-  if (interval !== null) {
-    return;
+  if (timerIntervalId !== null) return;
+
+  defaultTimerRunning = false;
+  if (defaultTimerIntervalId !== null) {
+    intervalclear(defaultTimerIntervalId)
+    defaultTimerIntervalId = null
   }
-  defaultinterval = 1;
+
   playground.focus()
   timeleft = length;
   timerElement.textContent = timeleft
-  interval = setInterval(() => {
+
+  timerIntervalId = addintervals(() => {
     timeleft--;
-    console.log(timeleft)
-    console.log(length)
-    if (timeleft == 0) {
-      clearInterval(interval)
-      interval = null;
-      console.log("time up")
+    if (timeleft <= 0) {
+      intervalclear(timerIntervalId)
+      timerIntervalId = null
       istimeup = true;
       timerElement.textContent = length
-      // calculate() we will calculate the results before restarting anything 
+      disableTimerButtons(false)
       reset()
+      return;
     }
     timerElement.textContent = timeleft
   }, 1000);
@@ -87,25 +108,17 @@ function timer(length) {
 function generatewords(count) {
   let text = []
   for (let i = 0; i < count; i++) {
-    text.push(wordList[i])
+    text.push(wordList[i % wordList.length])
   }
   return text
 }
 
-let wordscount = document.getElementById('wordscount')
-
-console.log(wordscount.children[1].dataset.words) //buttons selected for number of words 
-
-let words = generatewords(100) // words generated here 
-console.log(words)
-
-
+let words = generatewords(100)
 let distribute;
 let wordfocused;
 let shpan
 let spancount = 0;
 let numofwords = 0;
-
 let currentLine = 0;
 let lineHeight;
 
@@ -116,15 +129,12 @@ function scrollIfNeeded() {
   let caretRect = caretSpan.getBoundingClientRect();
   let playgroundRect = playground.getBoundingClientRect();
 
-  // If caret goes below the visible area, scroll up by one line
   if (caretRect.bottom > playgroundRect.bottom) {
-    console.log(caretRect.bottom, playgroundRect.bottom)
     currentLine++;
     lineHeight = parseFloat(getComputedStyle(playground).lineHeight);
     wordsContainer.style.transform = `translateY(-${currentLine * lineHeight}px)`;
   }
 }
-
 
 function createspan() {
   for (let i = 0; i < words.length; i++) {
@@ -144,57 +154,81 @@ function createspan() {
 createspan()
 
 let checkword;
-
 let defaultinterval = 0;
 
-function defaulttimer(){
-  let timeleft = 10;
-  let interval = setInterval(()=>{
-    timerElement.textContent=timeleft
-    timeleft--;
-    if(timeleft==0){
-      clearInterval(interval)
-      timeleft=0
-      timerElement.textContent='10'
+function defaulttimer() {
+  // Don't start if already running or finished once
+  if (defaultTimerRunning || defaultTimerOver) return;
+  defaultTimerRunning = true;
+  disableTimerButtons(true);
+
+  let timeLeftLocal = 10;
+  timerElement.textContent = timeLeftLocal;
+
+  defaultTimerIntervalId = addintervals(() => {
+    timerElement.textContent = timeLeftLocal;
+    timeLeftLocal--;
+    if (timeLeftLocal < 0) {
+      intervalclear(defaultTimerIntervalId)
+      defaultTimerIntervalId = null
+      defaultTimerRunning = false
+      defaultTimerOver = true // 👈 Mark finished permanently
+      timerElement.textContent = '10';
+      disableTimerButtons(false);
+      clearrallinterval();
+      istimeup = true; // 👈 stop typing
     }
-  },1000)
+  }, 1000);
+}
+
+function moveCaret(position) {
+  targetSpan = checkword && checkword[position];
+  if (targetSpan) {
+    targetSpan.parentNode.insertBefore(caret, targetSpan);
+  } else {
+    wordsContainer.appendChild(caret);
+  }
 }
 
 function play() {
   checkword = playground.querySelectorAll('span')
   playground.addEventListener('keydown', (e) => {
-    if(istimeup == true ){
+    // Block typing if default timer is over or time is up
+    if (istimeup === true || defaultTimerOver === true) {
       e.preventDefault()
+      return;
     }
-    if(defaultinterval == 0 ){
+
+    if (defaultinterval === 0) {
       defaulttimer()
     }
     defaultinterval++;
+
     let keypressed = e.key;
-    let expectedkey = checkword[spancount].innerText
+    let expectedkey = checkword[spancount] && checkword[spancount].innerText
+
     if (keypressed === " ") {
       e.preventDefault();
       numofwords++;
       correctwords.innerHTML = numofwords;
-      console.log("aghe chalo");
-      spancount++; // move to next word on space
+      spancount++;
     } else if (keypressed === 'Backspace') {
-      spancount = Math.max(0, spancount - 1); // don’t let it go below 0
-      console.log("backspace pressed");
+      e.preventDefault();
+      spancount = Math.max(0, spancount - 1);
       numofwords = Math.max(0, numofwords - 1)
       correctwords.innerHTML = numofwords;
-      checkword[spancount].classList.remove('correct', 'wrong')
+      if (checkword[spancount]) {
+        checkword[spancount].classList.remove('correct', 'wrong')
+      }
     }
     else if (keypressed === expectedkey) {
-      console.log("hogaya kaam");
       numofwords++;
       correctwords.innerHTML = numofwords;
-      checkword[spancount].classList.add('correct')
+      if (checkword[spancount]) checkword[spancount].classList.add('correct')
       spancount++;
     }
     else {
-      console.log("abey bsdk kia kr raha hai");
-      checkword[spancount].classList.add('wrong')
+      if (checkword[spancount]) checkword[spancount].classList.add('wrong')
       spancount++;
     }
     moveCaret(spancount);
@@ -203,21 +237,37 @@ function play() {
 }
 
 playground.focus()
-
 play()
 
 function reset() {
+  // here in these lines we are making sure that the user starts typing again the default settings can run 
   defaultinterval = 0
-  console.log("restartclicked")
+  defaultTimerRunning = false
+  defaultTimerOver = false 
+  istimeup = false
+  // so that the user can again select any timer of his choice again 
+  if (timerIntervalId !== null) {
+    intervalclear(timerIntervalId)
+    timerIntervalId = null
+  }
+  // 
+  if (defaultTimerIntervalId !== null) {
+    intervalclear(defaultTimerIntervalId)
+    defaultTimerIntervalId = null
+  }
+  clearrallinterval() //clears all intervals 
+
   numofwords = 0;
   spancount = 0;
   correctwords.innerHTML = numofwords;
   currentLine = 0;
+  timerElement.textContent = '10'
   wordsContainer.style.transform = `translateY(0px)`;
   moveCaret(0)
-  checkword.forEach(element => {
-    element.classList.remove('correct','wrong')
+  checkword && checkword.forEach(element => {
+    element.classList.remove('correct', 'wrong')
   });
+  disableTimerButtons(false)
   playground.focus()
 }
 
