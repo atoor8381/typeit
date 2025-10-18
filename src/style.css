@@ -20,7 +20,7 @@ body {
 
 header h1 {
   margin-bottom: 20px;
-  color: #fff;
+  color: rgb(38, 83, 38);
 }
 
 .controls {
@@ -31,7 +31,7 @@ header h1 {
 
 .controls button {
   background: #1f1f1f;
-  color: #e0e0e0;
+  color: white;
   border: 1px solid #333;
   padding: 8px 15px;
   margin: 5px;
@@ -119,16 +119,7 @@ header h1 {
   }
 
   #restart {
-    background: #6200ea;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  #start{
-    background: #6200ea;
+    background: none;
     color: white;
     border: none;
     padding: 10px 20px;

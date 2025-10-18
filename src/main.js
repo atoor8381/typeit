@@ -75,7 +75,7 @@ let defaultTimerIntervalId = null
 let istimeup = false
 let timeleft
 let defaultTimerRunning = false
-let defaultTimerOver = false // 👈 NEW FLAG
+let defaultTimerOver = false //  NEW FLAG
 
 function timer(length) {
   if (timerIntervalId !== null) return;
@@ -160,7 +160,7 @@ function defaulttimer() {
   // Don't start if already running or finished once
   if (defaultTimerRunning || defaultTimerOver) return;
   defaultTimerRunning = true;
-  disableTimerButtons(true);
+  disableTimerButtons(true); //disable other timer buttons
 
   let timeLeftLocal = 10;
   timerElement.textContent = timeLeftLocal;
@@ -174,7 +174,7 @@ function defaulttimer() {
       defaultTimerRunning = false
       defaultTimerOver = true // 👈 Mark finished permanently
       timerElement.textContent = '10';
-      disableTimerButtons(false);
+      disableTimerButtons(false); //re enables the timer buttons
       clearrallinterval();
       istimeup = true; // 👈 stop typing
     }
@@ -215,7 +215,7 @@ function play() {
     } else if (keypressed === 'Backspace') {
       e.preventDefault();
       spancount = Math.max(0, spancount - 1);
-      numofwords = Math.max(0, numofwords - 1)
+      numofwords = Math.max(0, numofwords - 1) //these lines will prevent us from going below zero 
       correctwords.innerHTML = numofwords;
       if (checkword[spancount]) {
         checkword[spancount].classList.remove('correct', 'wrong')
