@@ -47,7 +47,6 @@ function clearrallinterval() {
 
 clearrallinterval()
 
-// Select all timer buttons
 const timerButtons = [tensec, twentysec, thirtysec];
 
 function disableTimerButtons(state) {
@@ -59,7 +58,9 @@ function disableTimerButtons(state) {
 
 timerButtons.forEach(button => {
   if (!button) return;
+  
   button.addEventListener('click', () => {
+    defaultTimerIntervalId
     disableTimerButtons(true);
     const seconds = parseInt(button.id);
     timer(seconds);
@@ -76,11 +77,14 @@ let istimeup = false
 let timeleft
 let defaultTimerRunning = false
 let defaultTimerOver = false //  NEW FLAG
+let customtimerrunning;
 
 function timer(length) {
-  if (timerIntervalId !== null) return;
+  if (timerIntervalId !== null ) return;
 
   defaultTimerRunning = false;
+  customtimerrunning = true;
+  
   if (defaultTimerIntervalId !== null) {
     intervalclear(defaultTimerIntervalId)
     defaultTimerIntervalId = null
@@ -98,6 +102,7 @@ function timer(length) {
       istimeup = true;
       timerElement.textContent = length
       disableTimerButtons(false)
+      customtimerrunning=false;
       reset()
       return;
     }
@@ -158,7 +163,7 @@ let defaultinterval = 0;
 
 function defaulttimer() {
   // Don't start if already running or finished once
-  if (defaultTimerRunning || defaultTimerOver) return;
+  if (defaultTimerRunning || defaultTimerOver || customtimerrunning) return;
   defaultTimerRunning = true;
   disableTimerButtons(true); //disable other timer buttons
 
@@ -244,6 +249,7 @@ function reset() {
   defaultinterval = 0
   defaultTimerRunning = false
   defaultTimerOver = false 
+  customtimerrunning = false;
   istimeup = false
   // so that the user can again select any timer of his choice again 
   if (timerIntervalId !== null) {
@@ -274,3 +280,7 @@ function reset() {
 restart.addEventListener('click', (e) => {
   reset()
 })
+
+
+
+//on the start of the timer from any button the default timer should not be running 

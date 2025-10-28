@@ -1,6 +1,6 @@
 /* Dark theme default */
 body {
-  background-color: rgb(18, 15, 15);
+  background-color: black;
   /* background: radial-gradient(rgb(41, 41, 52), black); */
   color: #e0e0e0;
   font-family: Arial, sans-serif;
@@ -20,7 +20,7 @@ body {
 
 header h1 {
   margin-bottom: 20px;
-  color: rgb(38, 83, 38);
+  color: blue;
 }
 
 .controls {
