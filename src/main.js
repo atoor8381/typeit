@@ -158,7 +158,7 @@ function createspan() {
 }
 createspan()
 
-let checkword;
+let checkword;  
 let defaultinterval = 0;
 
 function defaulttimer() {
@@ -210,7 +210,7 @@ function play() {
     defaultinterval++;
 
     let keypressed = e.key;
-    let expectedkey = checkword[spancount] && checkword[spancount].innerText
+    let expectedkey = checkword[spancount] && checkword[spancount].innerText 
 
     if (keypressed === " ") {
       e.preventDefault();
